@@ -4,6 +4,8 @@ ESP32 UART ↔ Bluetooth Classic (SPP) bridge.
 Bytes received on the UART are forwarded over Bluetooth, and bytes received
 over Bluetooth are forwarded to the UART — transparently in both directions.
 
+Built with **ESP-IDF** (plain C, single source file).
+
 Low-power features enabled by default:
 
 | Feature | Setting | Effect |
@@ -11,6 +13,7 @@ Low-power features enabled by default:
 | CPU frequency | 80 MHz (down from 240 MHz) | ~3× lower MCU power draw |
 | BT TX power | 0 dBm (down from +9 dBm) | Lower radio power, adequate for room-distance use |
 | BT modem sleep | enabled | Radio sleeps between packets |
+| BLE memory | released | Frees ~30 KB of RAM |
 
 ---
 
@@ -28,43 +31,37 @@ Connect the external device's **TX → ESP32 GPIO 16** and **RX → ESP32 GPIO 1
 
 ## Configuration
 
-All user-adjustable settings live at the top of [`src/main.cpp`](src/main.cpp):
+All user-adjustable settings are `#define`s at the top of [`main/src/main.c`](main/src/main.c):
 
 ```c
-// Bluetooth name shown during pairing
-#define BT_DEVICE_NAME "ESP32-UART-Bridge"
-
-// TX power: ESP_PWR_LVL_N12 (−12 dBm) … ESP_PWR_LVL_P9 (+9 dBm)
-#define BT_TX_POWER ESP_PWR_LVL_N0   // 0 dBm
-
-// UART port and pins
-#define BRIDGE_UART        Serial2
-#define BRIDGE_UART_BAUD   115200
-#define BRIDGE_UART_RX_PIN 16
-#define BRIDGE_UART_TX_PIN 17
-
-// CPU frequency in MHz (minimum for stable BT on ESP32 is 80)
-#define CPU_FREQ_MHZ 80
+#define BT_DEVICE_NAME      "ESP32-UART-Bridge"
+#define BT_TX_POWER         ESP_PWR_LVL_N0       // 0 dBm
+#define BRIDGE_UART_NUM     UART_NUM_2
+#define BRIDGE_UART_BAUD    115200
+#define BRIDGE_UART_TX_PIN  17
+#define BRIDGE_UART_RX_PIN  16
 ```
+
+CPU frequency is set in `sdkconfig.defaults` (`CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_80=y`).
 
 ---
 
-## Build & Flash
+## Build & Flash (ESP-IDF)
 
-This project uses [PlatformIO](https://platformio.org/).
+Requires [ESP-IDF v5.x](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/).
 
 ```bash
-# Install PlatformIO CLI (once)
-pip install platformio
+# Set up ESP-IDF environment (once per terminal session)
+. $IDF_PATH/export.sh
 
 # Build
-pio run
+idf.py build
 
 # Flash (replace /dev/ttyUSB0 with your port)
-pio run --target upload --upload-port /dev/ttyUSB0
+idf.py -p /dev/ttyUSB0 flash
 
 # Monitor serial output
-pio device monitor --port /dev/ttyUSB0 --baud 115200
+idf.py -p /dev/ttyUSB0 monitor
 ```
 
 ---
