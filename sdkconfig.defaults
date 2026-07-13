@@ -1,0 +1,12 @@
+# CPU frequency – 80 MHz for low power (minimum for stable BT)
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_80=y
+
+# Bluetooth – Classic only (no BLE)
+CONFIG_BT_ENABLED=y
+CONFIG_BT_CLASSIC_ENABLED=y
+CONFIG_BT_BLE_ENABLED=n
+CONFIG_BT_SPP_ENABLED=y
+
+# Bluetooth modem sleep
+CONFIG_BTDM_CTRL_MODEM_SLEEP=y
+CONFIG_BTDM_CTRL_MODEM_SLEEP_MODE_ORIG=y
