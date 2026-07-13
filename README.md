@@ -28,7 +28,7 @@ Connect the external device's **TX → ESP32 GPIO 16** and **RX → ESP32 GPIO 1
 
 ## Configuration
 
-All user-adjustable settings live in [`src/config.h`](src/config.h):
+All user-adjustable settings live at the top of [`src/main.cpp`](src/main.cpp):
 
 ```c
 // Bluetooth name shown during pairing

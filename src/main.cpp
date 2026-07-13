@@ -14,7 +14,28 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
 #include "esp_bt.h"   // esp_bredr_tx_power_set(), esp_bt_sleep_enable()
-#include "config.h"
+
+// ---------------------------------------------------------------------------
+// Configuration – edit these values to suit your setup
+// ---------------------------------------------------------------------------
+
+// Bluetooth device name (visible during pairing)
+#define BT_DEVICE_NAME "ESP32-UART-Bridge"
+
+// Bluetooth TX power: ESP_PWR_LVL_N12 (−12 dBm) … ESP_PWR_LVL_P9 (+9 dBm)
+#define BT_TX_POWER ESP_PWR_LVL_N0
+
+// UART bridge port and pins (Serial2 = GPIO 16 RX / GPIO 17 TX on most boards)
+#define BRIDGE_UART        Serial2
+#define BRIDGE_UART_BAUD   115200
+#define BRIDGE_UART_RX_PIN 16
+#define BRIDGE_UART_TX_PIN 17
+
+// CPU frequency in MHz (80 is the minimum for stable Bluetooth)
+#define CPU_FREQ_MHZ 80
+
+// Max bytes forwarded per loop() iteration per direction
+#define BRIDGE_BUF_SIZE 256
 
 static BluetoothSerial SerialBT;
 
